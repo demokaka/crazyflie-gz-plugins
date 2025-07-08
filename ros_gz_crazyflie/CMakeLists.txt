@@ -60,7 +60,7 @@ add_library(gz_crazysim_plugin
 # The 'PRIVATE' keyword specifies that this directive will populate the
 # INCLUDE_DIRECTORIES property for the 'crazysim_plugin' target.
 target_include_directories(
-  gz_crazysim_plugin PRIVATE include
+  gz_crazysim_plugin PRIVATE include/${PROJECT_NAME}
 )
 
 
