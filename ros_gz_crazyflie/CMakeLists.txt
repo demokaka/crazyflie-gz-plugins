@@ -18,18 +18,27 @@ find_package(gz-common5 REQUIRED COMPONENTS profiler)
 set(GZ_COMMON_VER ${gz-common5_VERSION_MAJOR})
 
 
-# Harmonic
-if("$ENV{GZ_VERSION}" STREQUAL "harmonic")
-  find_package(gz-sim8 REQUIRED)
-  set(GZ_SIM_VER ${gz-sim8_VERSION_MAJOR})
-  message(STATUS "Compiling against Gazebo Harmonic")
+set(GZ_SIM_FOUND FALSE)
+foreach(ver 8 7) # replace with future gz-sim versions
+  if(NOT GZ_SIM_FOUND)
+    find_package(gz-sim NAMES gz-sim${ver})
+    if(gz-sim_FOUND)
+      set(GZ_SIM_VER ${gz-sim_VERSION_MAJOR})
+      set(GZ_SIM_FOUND TRUE)
+    endif()
+  endif()
+endforeach()
+
+if(NOT GZ_SIM_FOUND)
+  message(FATAL_ERROR "gz-sim not found")
+endif()
+
+if(GZ_SIM_VER EQUAL 8)
+  message("Found Gazebo 8: Harmonic")
   find_package(gz-transport REQUIRED NAMES gz-transport13)
   find_package(gz-msgs REQUIRED NAMES gz-msgs10)
-# Default to Garden
-else()
-  find_package(gz-sim7 REQUIRED)
-  set(GZ_SIM_VER ${gz-sim7_VERSION_MAJOR})
-  message(STATUS "Compiling against Gazebo Garden")
+elseif(GZ_SIM_VER EQUAL 7)
+  message("Found Gazebo 7: Garden")
   find_package(gz-transport REQUIRED NAMES gz-transport12)
   find_package(gz-msgs REQUIRED NAMES gz-msgs9)
 endif()
